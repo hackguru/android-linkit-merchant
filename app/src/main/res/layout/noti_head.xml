@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="right"
+    android:padding="0dp">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lay_noti_main">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/img_noti"
+            android:scaleType="centerCrop"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+
+            android:layout_margin="0dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#AA000000"
+            android:id="@+id/lay_noti_text"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:layout_alignTop="@+id/img_noti"
+            android:layout_toLeftOf="@+id/img_noti"
+            android:layout_alignBottom="@+id/img_noti"
+            android:layout_margin="0dp">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="TITLE"
+                android:id="@+id/txtNotiTitle"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:layout_centerInParent="true"
+                android:padding="10dp"
+                android:gravity="center" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

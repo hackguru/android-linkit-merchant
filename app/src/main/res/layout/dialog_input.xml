@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?><!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:orientation="vertical"--><!--android:layout_width="fill_parent"--><!--android:layout_height="wrap_content"--><!--android:background="#eee"--><!--android:layout_margin="0dp"--><!--android:longClickable="false">-->
+
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="6dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter description"
+            android:id="@+id/textView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="#4d4d4d"
+            android:textStyle="bold"
+            android:textSize="18dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText_desc"
+            android:layout_below="@+id/textView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#eeeeee"
+            android:textColor="#4d4d4d" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:id="@+id/btn_ok"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:background="#0000"
+            android:layout_below="@+id/editText_desc"
+            android:textColor="#2191c1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:id="@+id/btn_cancel"
+            android:layout_gravity="right"
+            android:background="#0000"
+            android:layout_alignTop="@+id/btn_ok"
+            android:layout_toLeftOf="@+id/btn_ok"
+            android:layout_toStartOf="@+id/btn_ok"
+            android:textColor="#4d4d4d" />
+
+        <requestFocus
+            android:layout_above="@+id/btn_cancel"
+            android:layout_toLeftOf="@+id/btn_cancel"
+            android:layout_toStartOf="@+id/btn_cancel" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView><!--</RelativeLayout>-->

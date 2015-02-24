@@ -1,0 +1,91 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MainActivity$PlaceholderFragment"
+    android:background="#0000">
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_main_bar">
+
+
+        <ams.android.linkitmerchant.Tools.myListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/listView"
+            tools:listitem="@layout/item_list"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:divider="#cccccc"
+            android:dividerHeight="0dp"
+            android:layout_alignParentTop="true"
+            android:drawSelectorOnTop="false"
+            android:scrollingCache="true"
+            android:descendantFocusability="beforeDescendants"
+            android:smoothScrollbar="true" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="42dp"
+    android:id="@+id/layout_main_bar"
+    android:background="#F9FFFFFF">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:src="@drawable/linkit"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:padding="5dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_logout"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logout"
+            android:scaleType="fitCenter"
+            android:padding="5dp"
+            android:background="#0000" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#cccccc"></LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/lay_waiting"
+        android:background="#aaffffff"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="invisible">
+
+        <ProgressBar
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:indeterminate="true" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
