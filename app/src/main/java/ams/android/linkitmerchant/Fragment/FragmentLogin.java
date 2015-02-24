@@ -52,7 +52,7 @@ public class FragmentLogin extends Fragment {
 
 
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        if (!(getActivity().getRequestedOrientation() ==ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
+        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);

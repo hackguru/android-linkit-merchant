@@ -101,17 +101,30 @@ public class AdapterListview extends BaseAdapter {
 
         ImageView imgLink = (ImageView) rootView.findViewById(R.id.img_link);
         final ImageView imgInsta = (ImageView) rootView.findViewById(R.id.img_insta);
-        ClearableEditText txtDescOrg = (ClearableEditText) rootView.findViewById(R.id.etxtDesc);
+        final ClearableEditText txtDesc = (ClearableEditText) rootView.findViewById(R.id.etxtDesc);
+        final TextView txtDescFix = (TextView) rootView.findViewById(R.id.txtDescFix);
 
-        final ClearableEditText txtDesc = txtDescOrg;
+
+        txtDescFix.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtDesc.setVisibility(View.VISIBLE);
+                txtDesc.selectAll();
+                txtDesc.requestFocus();
+                txtDescFix.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
         txtDesc.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     txtDesc.clearFocus();
+                    txtDesc.setVisibility(View.INVISIBLE);
+                    txtDescFix.setVisibility(View.VISIBLE);
                     return true;
-                }else
-                {
+                } else {
                     return false;
                 }
 
@@ -128,11 +141,14 @@ public class AdapterListview extends BaseAdapter {
                     DescriptionData descriptionData = new DescriptionData();
                     descriptionData.position = position;
                     descriptionData.description = txtDesc.getText().toString();
+                    txtDescFix.setText(txtDesc.getText());
                     new postDescriptionAsync().execute(descriptionData);
                     txtDesc.clearFocus();
                     txtDesc.changeToNormalMode();
+                    txtDesc.setVisibility(View.INVISIBLE);
+                    txtDescFix.setVisibility(View.VISIBLE);
                     return true;
-                }else {
+                } else {
                     //return true;
                 }
                 return false;
@@ -142,8 +158,10 @@ public class AdapterListview extends BaseAdapter {
 
         if (!items.get(position).productDescription.equals("null")) {
             txtDesc.setText(items.get(position).productDescription);
+            txtDescFix.setText(items.get(position).productDescription);
         } else {
             txtDesc.setText("");
+            txtDescFix.setText("");
         }
 
         imageLoader.displayImage(items.get(position).linkSrceenShot, imgLink, options, imageListener);
@@ -210,7 +228,7 @@ public class AdapterListview extends BaseAdapter {
             super.onLoadingCancelled(imageUri, view);
         }
     }
-	
+
     private class postDescriptionAsync extends AsyncTask<DescriptionData, Void, String> {
         @Override
         protected String doInBackground(DescriptionData... descriptionDatas) {

@@ -12,7 +12,7 @@ import ams.android.linkitmerchant.R;
 /**
  * Created by Aidin on 2/12/2015.
  */
-public class CustomDialog extends Dialog  {
+public class CustomDialog extends Dialog {
 
     public Activity c;
     public Dialog d;

@@ -15,7 +15,7 @@ public class FragmentIntro extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (!(getActivity().getRequestedOrientation() ==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)) {
+        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         View rootView = inflater.inflate(R.layout.fragment_intro, container, false);

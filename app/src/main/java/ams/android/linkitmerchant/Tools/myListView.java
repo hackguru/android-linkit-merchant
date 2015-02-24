@@ -16,6 +16,7 @@ public class myListView extends android.widget.ListView {
 
     public interface OnDetectScrollListener {
         void onUpScrolling();
+
         void onDownScrolling();
     }
 

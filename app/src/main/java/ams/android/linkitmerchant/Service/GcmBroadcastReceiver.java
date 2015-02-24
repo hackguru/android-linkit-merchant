@@ -1,10 +1,10 @@
 package ams.android.linkitmerchant.Service;
 
 import android.app.Activity;
-        import android.content.ComponentName;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.support.v4.content.WakefulBroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 /**
  * Created by Aidin on 2/1/2015.

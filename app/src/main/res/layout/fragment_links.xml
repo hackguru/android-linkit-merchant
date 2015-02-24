@@ -30,10 +30,10 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout
-    android:layout_width="fill_parent"
-    android:layout_height="42dp"
-    android:id="@+id/layout_main_bar"
-    android:background="#F9FFFFFF">
+        android:layout_width="fill_parent"
+        android:layout_height="42dp"
+        android:id="@+id/layout_main_bar"
+        android:background="#F9FFFFFF">
 
         <ImageView
             android:layout_width="wrap_content"

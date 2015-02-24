@@ -90,8 +90,7 @@ public class ClearableEditText extends EditText implements OnTouchListener,
         }
     }
 
-    public void changeToNormalMode()
-    {
+    public void changeToNormalMode() {
         setClearIconVisible(false);
     }
 
