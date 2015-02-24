@@ -48,7 +48,6 @@ public class FragmentLogin extends Fragment {
     GoogleCloudMessaging gcm;
     Context context;
     WebView webView;
-    Boolean isPaused = true;
     ImageView imageReload;
 
 
