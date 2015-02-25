@@ -17,7 +17,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -74,10 +74,11 @@ public class FragmentLogin extends Fragment {
         imageReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new hasActiveInternetConnectionTask().execute();
+                setUrl();
+                //new hasActiveInternetConnectionTask().execute();
             }
         });
-
+        imageReload.bringToFront();
         CookieSyncManager.createInstance(getActivity());
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
@@ -120,16 +121,37 @@ public class FragmentLogin extends Fragment {
         return rootView;
     }
 
-    class hasActiveInternetConnectionTask extends AsyncTask<String, String, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... params) {
-            if (isNetworkAvailable(context)) {
-                try {
-                    HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
-                    urlc.setRequestProperty("User-Agent", "Test");
-                    urlc.setRequestProperty("Connection", "close");
-                    urlc.setConnectTimeout(1500);
-                    urlc.connect();
+//    class hasActiveInternetConnectionTask extends AsyncTask<String, String, Boolean> {
+//        @Override
+//        protected Boolean doInBackground(String... params) {
+//            if (isNetworkAvailable(context)) {
+//                try {
+//                    HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+//                    urlc.setRequestProperty("User-Agent", "Test");
+//                    urlc.setRequestProperty("Connection", "close");
+//                    urlc.setConnectTimeout(1500);
+//                    urlc.connect();
+//
+//                    return (urlc.getResponseCode() == 200);
+//                } catch (IOException e) {
+//                    Log.e(TAG, "Error checking internet connection", e);
+//                    return false;
+//                }
+//            } else {
+//                Log.d(TAG, "No network available!");
+//                return false;
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result) {
+//            if (result) {
+//
+//            } else {
+//                Toast.makeText(getActivity().getApplicationContext(), "Internet connection required", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
                     return (urlc.getResponseCode() == 200);
                 } catch (IOException e) {
