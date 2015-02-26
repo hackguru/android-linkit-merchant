@@ -10,4 +10,5 @@ public class LinkitObject {
     public String productLink;
     public String linkSrceenShot;
     public String imageUrl;
+    public String ownerWebsite;
 }

@@ -329,7 +329,6 @@ public class FragmentLinks extends Fragment {
                     } else {
                         myobject.mediaID = "";
                     }
-                    // date
                     if (item.has("created")) {
                         myobject.createdDate = item.getString("created");
                     } else {
@@ -355,6 +354,12 @@ public class FragmentLinks extends Fragment {
                     } else {
                         myobject.imageUrl = "";
                     }
+                    if (item.getJSONObject("owner").has("website")) {
+                        myobject.ownerWebsite = item.getJSONObject("owner").getString("website");
+                    } else {
+                        myobject.ownerWebsite = "";
+                    }
+
                     items.add(myobject);
                 }
 

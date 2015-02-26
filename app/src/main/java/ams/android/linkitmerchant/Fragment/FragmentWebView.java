@@ -80,7 +80,7 @@ public abstract class FragmentWebView extends Fragment {
     String urlPhoto, urlJSON;
     Boolean isInWebViewState = true;
     protected BackHandlerInterface backHandlerInterface;
-    private static String defaultURL = "http://www.google.com/?gws_rd=ssl";
+    private static String defaultURL;
     ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
     ImageLoadingListener imageListener;
@@ -114,6 +114,7 @@ public abstract class FragmentWebView extends Fragment {
         btnBack = (ImageButton) rootView.findViewById(R.id.btn_back);
         btnForward = (ImageButton) rootView.findViewById(R.id.btn_forward);
         final ImageView imgInsta = (ImageView) rootView.findViewById(R.id.img_insta_preview);
+        etxtUrl = (EditText) rootView.findViewById(R.id.etxtUrl);
 
         options = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)
@@ -144,15 +145,16 @@ public abstract class FragmentWebView extends Fragment {
             }
         });
 
-        etxtUrl = (EditText) rootView.findViewById(R.id.etxtUrl);
+
         urlPhoto = getResources().getString(R.string.BASE_URL).toString() + "media/matchScreenShot/" + currentItem.mediaID;
         urlJSON = getResources().getString(R.string.BASE_URL).toString() + "media/match/" + currentItem.mediaID;
+        defaultURL = (currentItem.ownerWebsite.length() > 0 ? currentItem.ownerWebsite : "http://www.google.com/?gws_rd=ssl");
         etxtUrl.setText(currentItem.productLink);
+
+
         cropImageView.setAspectRatio(640, 640);
         cropImageView.setFixedAspectRatio(true);
         cropImageView.setGuidelines(2);
-
-
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,7 +162,6 @@ public abstract class FragmentWebView extends Fragment {
                 checkNavigationButton();
             }
         });
-
         btnForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,8 +169,6 @@ public abstract class FragmentWebView extends Fragment {
                 checkNavigationButton();
             }
         });
-
-
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +178,6 @@ public abstract class FragmentWebView extends Fragment {
                 if (isInWebViewState) {
                     vistaWeb.setDrawingCacheEnabled(true);
                     bm = vistaWeb.getDrawingCache();
-
                     cropImageView.setImageBitmap(bm);
                     cropImageView.setVisibility(View.VISIBLE);
                     btnCapture.setText("CROP");
@@ -192,7 +190,6 @@ public abstract class FragmentWebView extends Fragment {
                 }
             }
         });
-
         etxtUrl.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -210,7 +207,6 @@ public abstract class FragmentWebView extends Fragment {
                 return false;
             }
         });
-
 
         vistaWeb.setWebViewClient(new WebViewClient() {
             @Override

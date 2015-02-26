@@ -128,7 +128,6 @@ public class AdapterListview extends BaseAdapter {
                 } else {
                     return false;
                 }
-
             }
         });
 
