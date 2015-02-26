@@ -27,6 +27,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edmodo.cropper.CropImageView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -245,6 +247,11 @@ public abstract class FragmentWebView extends Fragment {
         } else {
             vistaWeb.loadUrl(currentItem.productLink);
         }
+
+        // Get tracker.
+        Tracker t = ((GlobalApplication) getActivity().getApplication()).getTracker(GlobalApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("LinkitMerchant - WebView");
+        t.send(new HitBuilders.AppViewBuilder().build());
 
         return rootView;
     }

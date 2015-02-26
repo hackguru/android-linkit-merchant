@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
+    <integer name="ga_sessionTimeout">300</integer>
+
+    <!--&lt;!&ndash; Enable automatic Activity measurement &ndash;&gt;-->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+     <!--The screen names that will appear in reports-->
+    <!--<screenName name="ams.android.linkitmerchant.Fragment.FragmentLinks">-->
+        <!--LinkitShopper - List-->
+    <!--</screenName>-->
+    <!--  The following value should be replaced with correct property id. -->
+    <string name="ga_trackingId">UA-49223736-11</string>
+</resources>

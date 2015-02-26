@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -130,6 +132,11 @@ public class FragmentLinks extends Fragment {
             }
         });
         listView.setAdapter(adapterListview);
+
+        // Get tracker.
+        Tracker t = ((GlobalApplication) getActivity().getApplication()).getTracker(GlobalApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("LinkitMerchant - List");
+        t.send(new HitBuilders.AppViewBuilder().build());
 
         //refreshData(null, null, getResources().getString(R.string.PAGING_COUNT));
         return rootView;
