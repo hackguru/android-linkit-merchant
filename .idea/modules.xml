@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/LinkitMerchant.iml" filepath="$PROJECT_DIR$/LinkitMerchant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-linkit-merchant.iml" filepath="$PROJECT_DIR$/android-linkit-merchant.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cropper/cropper.iml" filepath="$PROJECT_DIR$/cropper/cropper.iml" />
       <module fileurl="file://$PROJECT_DIR$/pulltorefresh-and-loadmore/pulltorefresh-and-loadmore.iml" filepath="$PROJECT_DIR$/pulltorefresh-and-loadmore/pulltorefresh-and-loadmore.iml" />

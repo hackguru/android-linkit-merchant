@@ -57,7 +57,7 @@ public class AdapterListview extends BaseAdapter {
     Context context;
     FragmentManager fragmentManager;
     ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
-    ImageLoader imageLoader = ImageLoader.getInstance();
+    static ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
     ImageLoadingListener imageListener;
 
@@ -75,21 +75,22 @@ public class AdapterListview extends BaseAdapter {
                 .resetViewBeforeLoading(true)
                 .showImageOnFail(R.drawable.fail)
                 .showImageOnLoading(R.drawable.loading)
-                .showImageForEmptyUri(R.drawable.unlink).cacheInMemory(true)
-                .preProcessor(new BitmapProcessor() {
-                    @Override
-                    public Bitmap process(Bitmap bitmap) {
-                        return Bitmap.createScaledBitmap(bitmap, 400, 400, true);
-                    }
-                })
-                .cacheOnDisk(true).build();
+                .showImageForEmptyUri(R.drawable.unlink)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+//                .preProcessor(new BitmapProcessor() {
+//                    @Override
+//                    public Bitmap process(Bitmap bitmap) {
+//                        return Bitmap.createScaledBitmap(bitmap, 400, 400, true);
+//                    }
+//                })
+                .build();
 
         imageListener = new ImageDisplayListener();
         if (!imageLoader.isInited()) {
             imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         }
         imageLoader = ImageLoader.getInstance();
-//        cdd = new CustomDialog(activity);
     }
 
     @Override

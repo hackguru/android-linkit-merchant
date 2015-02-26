@@ -2,90 +2,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".MainActivity$PlaceholderFragment"
-    android:background="#0000">
+    android:background="#0000"
+    tools:context=".MainActivity$PlaceholderFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_container"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/layout_main_bar">
+        android:layout_below="@+id/txtEmptyInfo">
 
 
         <ams.android.linkitmerchant.Tools.myListView
+            android:id="@+id/listView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/listView"
-            tools:listitem="@layout/item_list"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:divider="#cccccc"
             android:dividerHeight="0dp"
-            android:layout_alignParentTop="true"
             android:drawSelectorOnTop="false"
             android:scrollingCache="true"
-            android:descendantFocusability="beforeDescendants"
-            android:smoothScrollbar="true" />
+            android:smoothScrollbar="true"
+            android:listSelector="@android:color/transparent"
+            tools:listitem="@layout/item_list" />
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="As soon as you post new instagrams, they will appear here!" />
+
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No Results" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_main_bar"
         android:layout_width="fill_parent"
         android:layout_height="42dp"
-        android:id="@+id/layout_main_bar"
         android:background="#F9FFFFFF">
 
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:src="@drawable/linkit"
             android:layout_centerInParent="true"
             android:adjustViewBounds="true"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:src="@drawable/linkit" />
 
         <ImageButton
+            android:id="@+id/btn_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_logout"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:adjustViewBounds="true"
-            android:src="@drawable/logout"
-            android:scaleType="fitCenter"
+            android:background="#0000"
             android:padding="5dp"
-            android:background="#0000" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/logout" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="#cccccc"></LinearLayout>
+            android:background="#cccccc"
+            android:orientation="horizontal"></LinearLayout>
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/lay_waiting"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/lay_waiting"
         android:background="#aaffffff"
-        android:paddingTop="5dp"
         android:paddingBottom="5dp"
+        android:paddingTop="5dp"
         android:visibility="invisible">
 
         <ProgressBar
+            android:id="@+id/progressBar"
             style="@style/Base.Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
-            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:indeterminate="true" />
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtEmptyInfo"
+        android:layout_below="@+id/layout_main_bar"
+        android:layout_centerHorizontal="true"
+        android:text="As soon as you post new instagrams, they will appear here!"
+        android:textColor="#2191c1"
+        android:padding="5dp"
+        android:visibility="invisible" />
 
 
 </RelativeLayout>

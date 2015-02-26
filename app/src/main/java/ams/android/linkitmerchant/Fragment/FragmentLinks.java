@@ -5,12 +5,9 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -44,8 +40,8 @@ import ams.android.linkitmerchant.Tools.myListView;
  */
 public class FragmentLinks extends Fragment {
 
-    static ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
-    static AdapterListview adapterListview;
+    ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
+    AdapterListview adapterListview;
     myListView listView;
     String userID, regID;
     LayoutInflater ginflater;
@@ -54,6 +50,7 @@ public class FragmentLinks extends Fragment {
     LinkitObject currentItem;
     RelativeLayout layWaiting;
     Boolean callState = false;
+    TextView txtEmptyInfo;
 
     public static final FragmentLinks newInstance(LinkitObject item) {
         FragmentLinks f = new FragmentLinks();
@@ -71,8 +68,12 @@ public class FragmentLinks extends Fragment {
         regID = ((GlobalApplication) getActivity().getApplication()).getRegistrationId();
         ginflater = inflater;
         grootView = rootView;
+        listView = (myListView) rootView.findViewById(R.id.listView);
+        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         ImageButton btnLogout = (ImageButton) rootView.findViewById(R.id.btn_logout);
         layWaiting = (RelativeLayout) rootView.findViewById(R.id.lay_waiting);
+        txtEmptyInfo = (TextView) rootView.findViewById(R.id.txtEmptyInfo);
+
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +81,7 @@ public class FragmentLinks extends Fragment {
                 builder
                         .setTitle("Logout")
                         .setMessage("Do you want to logout?")
-                        .setIcon(R.drawable.linkit)
+                        .setIcon(R.drawable.ic_launcher)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 serverLogout();
@@ -93,13 +94,9 @@ public class FragmentLinks extends Fragment {
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
-
-
             }
         });
 
-
-        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -113,7 +110,6 @@ public class FragmentLinks extends Fragment {
 
         adapterListview = new AdapterListview(getActivity(), getFragmentManager(), items);
 
-        listView = (myListView) rootView.findViewById(R.id.listView);
         listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
         listView.setOnDetectScrollListener(new myListView.OnDetectScrollListener() {
             @Override
@@ -135,27 +131,17 @@ public class FragmentLinks extends Fragment {
         });
         listView.setAdapter(adapterListview);
 
-        refreshData(null, null, getResources().getString(R.string.PAGING_COUNT));
+        //refreshData(null, null, getResources().getString(R.string.PAGING_COUNT));
         return rootView;
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
+        swipeLayout.setRefreshing(true);
         refreshData(null, null, getResources().getString(R.string.PAGING_COUNT));
-    }
-
-    private void showToast(String text) {
-        View layout = ginflater.inflate(R.layout.toast, (ViewGroup) grootView.findViewById(R.id.toast_layout_root));
-        final CardView card = (CardView) layout.findViewById(R.id.card_view_toast);
-        card.setCardBackgroundColor(Color.parseColor("#2191c1"));
-        TextView textView = (TextView) layout.findViewById(R.id.text);
-        textView.setText(text);
-        Toast toast = new Toast(getActivity().getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.BOTTOM, 0, 0);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(layout);
-        toast.show();
+        //Toast.makeText(getActivity().getApplicationContext(),"resume",Toast.LENGTH_SHORT).show();
     }
 
     public void serverLogout() {
@@ -172,12 +158,12 @@ public class FragmentLinks extends Fragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 ((GlobalApplication) getActivity().getApplication()).clearAllSettings();
-                showToast("Logout");
+                //showToast("Logout");
                 FragmentLogin f1 = new FragmentLogin();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container, f1); // f1_container is your FrameLayout container
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack("Login");
+                //ft.addToBackStack("Login");
                 ft.commit();
             }
 
@@ -186,13 +172,13 @@ public class FragmentLinks extends Fragment {
                 if (statusCode == 401) {
                     Log.e("linkit-merchant", "ERR 401");
                     ((GlobalApplication) getActivity().getApplication()).clearAllSettings();
-                    showToast("Logout");
-                    FragmentLogin f1 = new FragmentLogin();
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    ft.replace(R.id.container, f1); // f1_container is your FrameLayout container
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ft.addToBackStack("Login");
-                    ft.commit();
+//                    showToast("Logout");
+//                    FragmentLogin f1 = new FragmentLogin();
+//                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                    ft.replace(R.id.container, f1); // f1_container is your FrameLayout container
+//                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//                    ft.addToBackStack("Login");
+//                    ft.commit();
                 } else {
                     Log.e("linkit-merchant", "ERR");
                 }
@@ -286,18 +272,25 @@ public class FragmentLinks extends Fragment {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                adapterListview.notifyDataSetChanged();
-                swipeLayout.setRefreshing(false);
 
-                if (currentItem != null) {
-                    FragmentWebView f1 = FragmentWebView.newInstance(items.get(0));
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
-                    ft.add(R.id.container, f1, "WebView");
-                    ft.addToBackStack("WebView");
-                    ft.commit();
-                    currentItem = null;
+                if (items.isEmpty()) {
+                    txtEmptyInfo.setVisibility(View.VISIBLE);
+                    //refreshDataEmpty(null, null, getResources().getString(R.string.PAGING_COUNT));
+
+                } else {
+                    txtEmptyInfo.setVisibility(View.GONE);
+                    adapterListview.notifyDataSetChanged();
+                    swipeLayout.setRefreshing(false);
+                    if (currentItem != null) {
+                        FragmentWebView f1 = FragmentWebView.newInstance(items.get(0));
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
+                        ft.add(R.id.container, f1, "WebView");
+                        ft.addToBackStack("WebView");
+                        ft.commit();
+                        currentItem = null;
+                    }
                 }
 
 

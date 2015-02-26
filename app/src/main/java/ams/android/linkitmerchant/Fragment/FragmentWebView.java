@@ -146,7 +146,7 @@ public abstract class FragmentWebView extends Fragment {
         urlPhoto = getResources().getString(R.string.BASE_URL).toString() + "media/matchScreenShot/" + currentItem.mediaID;
         urlJSON = getResources().getString(R.string.BASE_URL).toString() + "media/match/" + currentItem.mediaID;
         etxtUrl.setText(currentItem.productLink);
-        cropImageView.setAspectRatio(600, 600);
+        cropImageView.setAspectRatio(640, 640);
         cropImageView.setFixedAspectRatio(true);
         cropImageView.setGuidelines(2);
 
@@ -177,7 +177,7 @@ public abstract class FragmentWebView extends Fragment {
                 if (isInWebViewState) {
                     vistaWeb.setDrawingCacheEnabled(true);
                     bm = vistaWeb.getDrawingCache();
-                    //bm = Bitmap.createScaledBitmap(bm, 600, 600, false);
+
                     cropImageView.setImageBitmap(bm);
                     cropImageView.setVisibility(View.VISIBLE);
                     btnCapture.setText("CROP");
@@ -345,6 +345,7 @@ public abstract class FragmentWebView extends Fragment {
             try {
                 //bm = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Forest.png");
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bm = Bitmap.createScaledBitmap(bm, 640, 640, true);
                 bm.compress(Bitmap.CompressFormat.PNG, 100, bos);
                 byte[] data = bos.toByteArray();
                 HttpClient httpClient = new DefaultHttpClient();

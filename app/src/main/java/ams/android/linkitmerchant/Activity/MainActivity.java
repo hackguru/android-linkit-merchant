@@ -26,30 +26,24 @@ public class MainActivity extends Activity implements FragmentWebView.BackHandle
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null) {
-//            FragmentIntro f1 = new FragmentIntro();
-//            FragmentTransaction ft = getFragmentManager().beginTransaction();
-//            ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
-//            ft.replace(R.id.container, f1, "Intro");
-//            //ft.addToBackStack("Intro");
-//            ft.commit();
-        } else {
-            if (!getIntent().hasExtra("RunByNoti")) {
+        // check if Notification Received
+        if (!getIntent().hasExtra("RunByNoti")) {
+           if (savedInstanceState == null) {
                 checkLogin();
-            } else {
-                LinkitObject myObject = new LinkitObject();
-                myObject.productLink = getIntent().getExtras().getString("productLink");
-                myObject.imageUrl = getIntent().getExtras().getString("imageUrl");
-                myObject.productDescription = getIntent().getExtras().getString("text");
-                myObject.linkSrceenShot = getIntent().getExtras().getString("linkSrceenShot");
-                new FragmentLinks();
-                FragmentLinks f1 = FragmentLinks.newInstance(myObject);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.container, f1, "Links");
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack("Links");
-                ft.commit();
             }
+        } else {
+            LinkitObject myObject = new LinkitObject();
+            myObject.productLink = getIntent().getExtras().getString("productLink");
+            myObject.imageUrl = getIntent().getExtras().getString("imageUrl");
+            myObject.productDescription = getIntent().getExtras().getString("text");
+            myObject.linkSrceenShot = getIntent().getExtras().getString("linkSrceenShot");
+            new FragmentLinks();
+            FragmentLinks f1 = FragmentLinks.newInstance(myObject);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.container, f1, "Links");
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack("Links");
+            ft.commit();
         }
     }
 
@@ -58,11 +52,11 @@ public class MainActivity extends Activity implements FragmentWebView.BackHandle
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        finish();
-    }
+//    @Override
+//    protected void onUserLeaveHint() {
+//        super.onUserLeaveHint();
+//        finish();
+//    }
 
     @Override
     public void onBackPressed() {
@@ -92,12 +86,10 @@ public class MainActivity extends Activity implements FragmentWebView.BackHandle
         }
     }
 
-
     @Override
     public void setSelectedFragment(FragmentWebView selectedFragment) {
         this.selectedFragment = selectedFragment;
     }
-
 
     private void checkLogin() {
         if (((GlobalApplication) getApplication()).getUserId().isEmpty()) {
