@@ -53,6 +53,8 @@ public class FragmentLinks extends Fragment {
     RelativeLayout layWaiting;
     Boolean callState = false;
     TextView txtEmptyInfo;
+    String globalEndDate = null;
+    String globalStartDate = null;
 
     public static final FragmentLinks newInstance(LinkitObject item) {
         FragmentLinks f = new FragmentLinks();
@@ -102,7 +104,7 @@ public class FragmentLinks extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshData(null, null, getResources().getString(R.string.PAGING_COUNT));
+                refreshData();
             }
         });
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
@@ -126,7 +128,7 @@ public class FragmentLinks extends Fragment {
                         Log.i("linkit", "end list");
                         layWaiting.setVisibility(View.VISIBLE);
                         callState = true;
-                        addData(null, items.get(items.size() - 1).createdDate, getResources().getString(R.string.PAGING_COUNT));
+                        addDataToEnd();
                     }
                 }
             }
@@ -138,16 +140,15 @@ public class FragmentLinks extends Fragment {
         t.setScreenName("LinkitMerchant - List");
         t.send(new HitBuilders.AppViewBuilder().build());
 
-        //refreshData(null, null, getResources().getString(R.string.PAGING_COUNT));
+        //refreshData(globalEndDate, globalStartDate, getResources().getString(R.string.PAGING_COUNT));
         return rootView;
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         swipeLayout.setRefreshing(true);
-        refreshData(null, null, getResources().getString(R.string.PAGING_COUNT));
+        refreshData();
         //Toast.makeText(getActivity().getApplicationContext(),"resume",Toast.LENGTH_SHORT).show();
     }
 
@@ -198,26 +199,21 @@ public class FragmentLinks extends Fragment {
         });
     }
 
-    public void addData(String startDate, String endDate, String count) {
+    public void addDataToEnd() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams requestParams = new RequestParams();
-
         client.addHeader("token", ((GlobalApplication) getActivity().getApplication()).getRegistrationId());
         client.addHeader("device", "android");
         client.addHeader("userType", "merchant");
-
-        if (startDate != null) {
-            requestParams.add("startDate", startDate);
+//        if (globalEndDate != null) {
+//            requestParams.add("endDate", globalEndDate);
+//        }
+        if (globalStartDate != null) {
+            requestParams.add("endDate", globalStartDate);
         }
-
-        if (endDate != null) {
-            requestParams.add("endDate", endDate);
-        }
-
-        if (count != null) {
-            requestParams.add("count", count);
-        }
-
+//        if (count != null) {
+//            requestParams.add("count", count);
+//        }
         String URL = getResources().getString(R.string.BASE_URL) + "users/" + userID + "/postedmedias";
         client.get(URL, requestParams, new AsyncHttpResponseHandler() {
             @Override
@@ -231,6 +227,8 @@ public class FragmentLinks extends Fragment {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+
+                globalStartDate = items.get(items.size()-1).createdDate;
                 adapterListview.notifyDataSetChanged();
                 layWaiting.setVisibility(View.INVISIBLE);
                 callState = false;
@@ -239,6 +237,7 @@ public class FragmentLinks extends Fragment {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                 callState = false;
+                swipeLayout.setRefreshing(false);
             }
 
             @Override
@@ -247,24 +246,21 @@ public class FragmentLinks extends Fragment {
         });
     }
 
-    public void refreshData(String startDate, String endDate, String count) {
+    public void refreshData() {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams requestParams = new RequestParams();
-
         client.addHeader("token", ((GlobalApplication) getActivity().getApplication()).getRegistrationId());
         client.addHeader("device", "android");
         client.addHeader("userType", "merchant");
-        if (startDate != null) {
-            requestParams.add("startDate", startDate);
+        if (globalStartDate != null) {
+            requestParams.add("startDate", globalStartDate);
         }
-
-        if (endDate != null) {
-            requestParams.add("endDate", endDate);
+        if (globalEndDate != null) {
+            requestParams.add("endDate", globalEndDate);
         }
-
-        if (count != null) {
-            requestParams.add("count", count);
-        }
+//        if (count != null) {
+//            requestParams.add("count", count);
+//        }
         String URL = getResources().getString(R.string.BASE_URL) + "users/" + userID + "/postedmedias";
         client.get(URL, requestParams, new AsyncHttpResponseHandler() {
             @Override
@@ -282,10 +278,12 @@ public class FragmentLinks extends Fragment {
 
                 if (items.isEmpty()) {
                     txtEmptyInfo.setVisibility(View.VISIBLE);
-                    //refreshDataEmpty(null, null, getResources().getString(R.string.PAGING_COUNT));
+                    //refreshData(globalEndDate, globalStartDate, getResources().getString(R.string.PAGING_COUNT));
 
                 } else {
                     txtEmptyInfo.setVisibility(View.GONE);
+                    globalEndDate = items.get(0).createdDate;
+                    globalStartDate = items.get(items.size()-1).createdDate;
                     adapterListview.notifyDataSetChanged();
                     swipeLayout.setRefreshing(false);
                     if (currentItem != null) {
@@ -307,6 +305,7 @@ public class FragmentLinks extends Fragment {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                 //Log.e("linkit-merchant", "ERR : " + errorResponse.toString());
+                swipeLayout.setRefreshing(false);
             }
 
             @Override

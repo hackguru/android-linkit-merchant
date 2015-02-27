@@ -336,7 +336,12 @@ public abstract class FragmentWebView extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             getFragmentManager().popBackStack();
-            ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData(null, null, null);
+            try {
+                ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData();
+            }catch (Exception ex)
+            {
+                Log.e("refresh after submit : ",ex.getMessage().toString());
+            }
             //Toast.makeText(getActivity(), "JSON Upload : " + result, Toast.LENGTH_LONG).show();
 
         }
