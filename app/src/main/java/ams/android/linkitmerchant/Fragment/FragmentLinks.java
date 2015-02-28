@@ -43,7 +43,7 @@ import ams.android.linkitmerchant.Tools.myListView;
 public class FragmentLinks extends Fragment {
 
     ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
-    AdapterListview adapterListview;
+    public AdapterListview adapterListview;
     myListView listView;
     String userID, regID;
     LayoutInflater ginflater;
@@ -113,7 +113,7 @@ public class FragmentLinks extends Fragment {
                 android.R.color.holo_red_light);
 
         adapterListview = new AdapterListview(getActivity(), getFragmentManager(), items);
-
+        listView.setAdapter(adapterListview);
         listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
         listView.setOnDetectScrollListener(new myListView.OnDetectScrollListener() {
             @Override
@@ -133,7 +133,9 @@ public class FragmentLinks extends Fragment {
                 }
             }
         });
-        listView.setAdapter(adapterListview);
+
+        swipeLayout.setRefreshing(true);
+        refreshData();
 
         // Get tracker.
         Tracker t = ((GlobalApplication) getActivity().getApplication()).getTracker(GlobalApplication.TrackerName.APP_TRACKER);
@@ -147,9 +149,8 @@ public class FragmentLinks extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        swipeLayout.setRefreshing(true);
-        refreshData();
-        //Toast.makeText(getActivity().getApplicationContext(),"resume",Toast.LENGTH_SHORT).show();
+//        swipeLayout.setRefreshing(true);
+//        refreshData();
     }
 
     public void serverLogout() {
@@ -160,13 +161,9 @@ public class FragmentLinks extends Fragment {
         String URL = getResources().getString(R.string.BASE_URL) + "users/updateregid";
         client.post(URL, new AsyncHttpResponseHandler() {
             @Override
-            public void onStart() {
-            }
-
-            @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 ((GlobalApplication) getActivity().getApplication()).clearAllSettings();
-                //showToast("Logout");
+                items.clear();
                 FragmentLogin f1 = new FragmentLogin();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container, f1); // f1_container is your FrameLayout container
@@ -183,7 +180,7 @@ public class FragmentLinks extends Fragment {
 //                    showToast("Logout");
 //                    FragmentLogin f1 = new FragmentLogin();
 //                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-//                    ft.replace(R.id.container, f1); // f1_container is your FrameLayout container
+//                    ft.replace(R.id.container, f1); // f1_c   ontainer is your FrameLayout container
 //                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 //                    ft.addToBackStack("Login");
 //                    ft.commit();
@@ -205,21 +202,11 @@ public class FragmentLinks extends Fragment {
         client.addHeader("token", ((GlobalApplication) getActivity().getApplication()).getRegistrationId());
         client.addHeader("device", "android");
         client.addHeader("userType", "merchant");
-//        if (globalEndDate != null) {
-//            requestParams.add("endDate", globalEndDate);
-//        }
         if (globalStartDate != null) {
             requestParams.add("endDate", globalStartDate);
         }
-//        if (count != null) {
-//            requestParams.add("count", count);
-//        }
         String URL = getResources().getString(R.string.BASE_URL) + "users/" + userID + "/postedmedias";
         client.get(URL, requestParams, new AsyncHttpResponseHandler() {
-            @Override
-            public void onStart() {
-            }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 try {
@@ -227,7 +214,6 @@ public class FragmentLinks extends Fragment {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-
                 globalStartDate = items.get(items.size()-1).createdDate;
                 adapterListview.notifyDataSetChanged();
                 layWaiting.setVisibility(View.INVISIBLE);
@@ -238,10 +224,6 @@ public class FragmentLinks extends Fragment {
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                 callState = false;
                 swipeLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
             }
         });
     }
@@ -255,18 +237,8 @@ public class FragmentLinks extends Fragment {
         if (globalStartDate != null) {
             requestParams.add("startDate", globalStartDate);
         }
-        if (globalEndDate != null) {
-            requestParams.add("endDate", globalEndDate);
-        }
-//        if (count != null) {
-//            requestParams.add("count", count);
-//        }
         String URL = getResources().getString(R.string.BASE_URL) + "users/" + userID + "/postedmedias";
         client.get(URL, requestParams, new AsyncHttpResponseHandler() {
-            @Override
-            public void onStart() {
-            }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 items.clear();
@@ -275,15 +247,13 @@ public class FragmentLinks extends Fragment {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-
                 if (items.isEmpty()) {
                     txtEmptyInfo.setVisibility(View.VISIBLE);
-                    //refreshData(globalEndDate, globalStartDate, getResources().getString(R.string.PAGING_COUNT));
-
                 } else {
                     txtEmptyInfo.setVisibility(View.GONE);
-                    globalEndDate = items.get(0).createdDate;
-                    globalStartDate = items.get(items.size()-1).createdDate;
+                    //globalEndDate = items.get(0).createdDate;
+                    globalStartDate = items.get(items.size() - 1).createdDate;
+
                     adapterListview.notifyDataSetChanged();
                     swipeLayout.setRefreshing(false);
                     if (currentItem != null) {
@@ -297,19 +267,12 @@ public class FragmentLinks extends Fragment {
                         currentItem = null;
                     }
                 }
-
-
-                //showToast("Data Updated");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                 //Log.e("linkit-merchant", "ERR : " + errorResponse.toString());
                 swipeLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
             }
         });
     }

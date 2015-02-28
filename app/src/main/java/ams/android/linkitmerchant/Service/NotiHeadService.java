@@ -122,8 +122,7 @@ public class NotiHeadService extends Service {
                     myIntent.putExtra("linkSrceenShot", linkSrceenShot);
                     myIntent.putExtra("productLink", productLink);
                     myIntent.putExtra("text", text);
-                    myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(myIntent);
 
                     new mainTask().run();
