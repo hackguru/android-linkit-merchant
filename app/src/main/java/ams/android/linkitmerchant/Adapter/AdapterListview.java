@@ -24,7 +24,6 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.nostra13.universalimageloader.core.process.BitmapProcessor;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -57,7 +56,7 @@ public class AdapterListview extends BaseAdapter {
     Context context;
     FragmentManager fragmentManager;
     ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
-    static ImageLoader imageLoader = ImageLoader.getInstance();
+    ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
     ImageLoadingListener imageListener;
 

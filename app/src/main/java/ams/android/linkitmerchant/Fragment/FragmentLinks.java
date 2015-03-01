@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -46,8 +47,6 @@ public class FragmentLinks extends Fragment {
     public AdapterListview adapterListview;
     myListView listView;
     String userID, regID;
-    LayoutInflater ginflater;
-    View grootView;
     SwipeRefreshLayout swipeLayout;
     LinkitObject currentItem;
     RelativeLayout layWaiting;
@@ -70,11 +69,10 @@ public class FragmentLinks extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_links, container, false);
         userID = ((GlobalApplication) getActivity().getApplication()).getUserId();
         regID = ((GlobalApplication) getActivity().getApplication()).getRegistrationId();
-        ginflater = inflater;
-        grootView = rootView;
         listView = (myListView) rootView.findViewById(R.id.listView);
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         ImageButton btnLogout = (ImageButton) rootView.findViewById(R.id.btn_logout);
+        ImageButton btnInsta = (ImageButton) rootView.findViewById(R.id.btn_instagram);
         layWaiting = (RelativeLayout) rootView.findViewById(R.id.lay_waiting);
         txtEmptyInfo = (TextView) rootView.findViewById(R.id.txtEmptyInfo);
 
@@ -98,6 +96,19 @@ public class FragmentLinks extends Fragment {
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
+            }
+        });
+
+        btnInsta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    Intent insta_intent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
+                    startActivity(insta_intent);
+                } catch (Exception e) {
+                    Log.e("linkitBuyer", "can't open Instagram");
+                }
             }
         });
 
