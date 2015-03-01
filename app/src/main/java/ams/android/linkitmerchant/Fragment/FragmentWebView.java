@@ -68,7 +68,11 @@ import ams.android.linkitmerchant.Tools.GlobalApplication;
  * Created by Aidin on 2/3/2015.
  */
 public abstract class FragmentWebView extends Fragment {
-    WebView vistaWeb;
+    static WebView vistaWeb;
+    static Bitmap bm;
+    static ImageLoader imageLoader = ImageLoader.getInstance();
+    static DisplayImageOptions options;
+    static ImageLoadingListener imageListener;
     Button btnCapture, btnGo;
     EditText etxtUrl;
     CropImageView cropImageView;
@@ -76,17 +80,11 @@ public abstract class FragmentWebView extends Fragment {
     ImageButton btnForward;
     RelativeLayout layWaiting;
     LinkitObject currentItem;
-    Bitmap bm;
     String urlPhoto, urlJSON;
     Boolean isInWebViewState = true;
     protected BackHandlerInterface backHandlerInterface;
     private static String defaultURL;
-    ImageLoader imageLoader = ImageLoader.getInstance();
-    DisplayImageOptions options;
-    ImageLoadingListener imageListener;
-
     public abstract boolean onBackPressed();
-
 
     public static final FragmentWebView newInstance(LinkitObject item) {
         FragmentWebView f = new FragmentWebView() {
@@ -184,9 +182,13 @@ public abstract class FragmentWebView extends Fragment {
                     vistaWeb.setVisibility(View.INVISIBLE);
                     isInWebViewState = false;
                 } else {
-                    bm = cropImageView.getCroppedImage();
-                    new PostPhotoAsync().execute();
-                    layWaiting.setVisibility(View.VISIBLE);
+                    try {
+                        bm = cropImageView.getCroppedImage();
+                        new PostPhotoAsync().execute();
+                        layWaiting.setVisibility(View.VISIBLE);
+                    }catch (Exception ex){
+
+                    }
                 }
             }
         });
@@ -335,8 +337,9 @@ public abstract class FragmentWebView extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            getFragmentManager().popBackStack();
             try {
+                Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
+                getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
                 ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData();
             }catch (Exception ex)
             {
