@@ -67,7 +67,7 @@ import ams.android.linkitmerchant.Tools.GlobalApplication;
 /**
  * Created by Aidin on 2/3/2015.
  */
-public abstract class FragmentWebView extends Fragment {
+public class FragmentWebView extends Fragment {
     static WebView vistaWeb;
     static Bitmap bm;
     static ImageLoader imageLoader = ImageLoader.getInstance();
@@ -85,24 +85,27 @@ public abstract class FragmentWebView extends Fragment {
     Boolean isInWebViewState = true;
     protected BackHandlerInterface backHandlerInterface;
     private static String defaultURL;
-    public abstract boolean onBackPressed();
+    //public abstract boolean onBackPressed();
 
-    public static final FragmentWebView newInstance(LinkitObject item) {
-        FragmentWebView f = new FragmentWebView() {
-            @Override
-            public boolean onBackPressed() {
-                return false;
-            }
-        };
-        f.currentItem = item;
-        return f;
-    }
+//    public static final FragmentWebView newInstance(LinkitObject item) {
+//        FragmentWebView f = new FragmentWebView() {
+//            @Override
+//            public boolean onBackPressed() {
+//                return false;
+//            }
+//        };
+//        f.currentItem = item;
+//        return f;
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        currentItem =  getArguments().getParcelable("item");
+
         final View rootView = inflater.inflate(R.layout.fragment_webview, container, false);
         mainView = (RelativeLayout)rootView.findViewById(R.id.lay_MainView);
         vistaWeb = (WebView) rootView.findViewById(R.id.webView_Content);
@@ -113,6 +116,7 @@ public abstract class FragmentWebView extends Fragment {
         layWaiting = (RelativeLayout) rootView.findViewById(R.id.lay_waiting);
         btnBack = (ImageButton) rootView.findViewById(R.id.btn_back);
         btnForward = (ImageButton) rootView.findViewById(R.id.btn_forward);
+        Button btnDone = (Button)rootView.findViewById(R.id.btnDone);
         final ImageView imgInsta = (ImageView) rootView.findViewById(R.id.img_insta_preview);
         etxtUrl = (EditText) rootView.findViewById(R.id.etxtUrl);
 
@@ -145,12 +149,10 @@ public abstract class FragmentWebView extends Fragment {
             }
         });
 
-
         urlPhoto = getResources().getString(R.string.BASE_URL).toString() + "media/matchScreenShot/" + currentItem.mediaID;
         urlJSON = getResources().getString(R.string.BASE_URL).toString() + "media/match/" + currentItem.mediaID;
         defaultURL = (currentItem.ownerWebsite.length() > 0 ? currentItem.ownerWebsite : "http://www.google.com/?gws_rd=ssl");
         etxtUrl.setText(currentItem.productLink);
-
 
         cropImageView.setAspectRatio(640, 640);
         cropImageView.setFixedAspectRatio(true);
@@ -159,16 +161,22 @@ public abstract class FragmentWebView extends Fragment {
             @Override
             public void onClick(View v) {
                 vistaWeb.goBack();
-                checkNavigationButton();
             }
         });
         btnForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vistaWeb.goForward();
-                checkNavigationButton();
             }
         });
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
+                getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
+            }
+        });
+
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,7 +240,6 @@ public abstract class FragmentWebView extends Fragment {
                 super.onPageFinished(view, url);
                 etxtUrl.setText(url);
                 progressBarLoad.setVisibility(View.INVISIBLE);
-                checkNavigationButton();
             }
         });
 
@@ -288,19 +295,19 @@ public abstract class FragmentWebView extends Fragment {
         }
     }
 
-    private void checkNavigationButton() {
-        if (vistaWeb.canGoBack()) {
-            btnBack.setVisibility(View.VISIBLE);
-        } else {
-            btnBack.setVisibility(View.INVISIBLE);
-        }
-
-        if (vistaWeb.canGoForward()) {
-            btnForward.setVisibility(View.VISIBLE);
-        } else {
-            btnForward.setVisibility(View.INVISIBLE);
-        }
-    }
+//    private void checkNavigationButton() {
+//        if (vistaWeb.canGoBack()) {
+//            btnBack.setVisibility(View.VISIBLE);
+//        } else {
+//            btnBack.setVisibility(View.INVISIBLE);
+//        }
+//
+//        if (vistaWeb.canGoForward()) {
+//            btnForward.setVisibility(View.VISIBLE);
+//        } else {
+//            btnForward.setVisibility(View.INVISIBLE);
+//        }
+//    }
 
     private class PostJSONAsync extends AsyncTask<Void, Void, String> {
         @Override
@@ -426,7 +433,6 @@ public abstract class FragmentWebView extends Fragment {
         cropImageView.refreshDrawableState();
         btnCapture.setText("CAPTURE");
         vistaWeb.setVisibility(View.VISIBLE);
-        checkNavigationButton();
         isInWebViewState = true;
 
     }

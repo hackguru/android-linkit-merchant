@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -268,10 +269,13 @@ public class FragmentLinks extends Fragment {
                     adapterListview.notifyDataSetChanged();
                     swipeLayout.setRefreshing(false);
                     if (currentItem != null) {
-                        FragmentWebView f1 = FragmentWebView.newInstance(items.get(0));
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        //ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
+                        FragmentWebView f1 = new FragmentWebView();
+                        Bundle bundle=new Bundle();
+                        bundle.putParcelable("item", items.get(0));
+                        f1.setArguments(bundle);
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        //ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                         ft.add(R.id.container, f1, "WebView");
                         ft.addToBackStack("WebView");
                         ft.commit();

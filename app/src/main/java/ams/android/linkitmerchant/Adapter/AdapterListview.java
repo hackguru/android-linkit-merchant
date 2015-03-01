@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -170,9 +171,13 @@ public class AdapterListview extends BaseAdapter {
         imgLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentWebView f1 = FragmentWebView.newInstance(items.get(position));
+                FragmentWebView f1 = new FragmentWebView();//.newInstance(items.get(position));
+                Bundle bundle=new Bundle();
+                bundle.putParcelable("item", items.get(position));
+                f1.setArguments(bundle);
                 FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                //ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                 ft.add(R.id.container, f1, "WebView");
                 ft.addToBackStack("WebView");
                 ft.commit();
