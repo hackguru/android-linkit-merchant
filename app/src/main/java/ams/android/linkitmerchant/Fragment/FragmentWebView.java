@@ -73,6 +73,7 @@ public abstract class FragmentWebView extends Fragment {
     static ImageLoader imageLoader = ImageLoader.getInstance();
     static DisplayImageOptions options;
     static ImageLoadingListener imageListener;
+    RelativeLayout mainView;
     Button btnCapture, btnGo;
     EditText etxtUrl;
     CropImageView cropImageView;
@@ -103,6 +104,7 @@ public abstract class FragmentWebView extends Fragment {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         final View rootView = inflater.inflate(R.layout.fragment_webview, container, false);
+        mainView = (RelativeLayout)rootView.findViewById(R.id.lay_MainView);
         vistaWeb = (WebView) rootView.findViewById(R.id.webView_Content);
         btnCapture = (Button) rootView.findViewById(R.id.btn_capture);
         cropImageView = (CropImageView) rootView.findViewById(R.id.img_screenshot);
@@ -234,7 +236,6 @@ public abstract class FragmentWebView extends Fragment {
             }
         });
 
-        //vistaWeb.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android 4.4.2; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.109 Mobile Safari/537.36");
         vistaWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         vistaWeb.getSettings().setAppCacheEnabled(true);
         vistaWeb.getSettings().setJavaScriptEnabled(true);
