@@ -266,7 +266,6 @@ public class FragmentWebView extends Fragment {
             }
         });
 
-
         imageLoader.displayImage(currentItem.imageUrl, imgInstaFull, options, imageListener);
 
         // Get tracker.
