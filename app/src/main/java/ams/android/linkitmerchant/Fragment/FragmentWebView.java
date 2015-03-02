@@ -6,9 +6,9 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -43,7 +43,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -51,14 +51,12 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import ams.android.linkitmerchant.Activity.MainActivity;
 import ams.android.linkitmerchant.Model.LinkitObject;
 import ams.android.linkitmerchant.R;
 import ams.android.linkitmerchant.Tools.GlobalApplication;
@@ -68,13 +66,14 @@ import ams.android.linkitmerchant.Tools.GlobalApplication;
  * Created by Aidin on 2/3/2015.
  */
 public class FragmentWebView extends Fragment {
+    private static String TAG = "linkitMerchant";
     static WebView vistaWeb;
     static Bitmap bm;
     static ImageLoader imageLoader = ImageLoader.getInstance();
     static DisplayImageOptions options;
     static ImageLoadingListener imageListener;
     RelativeLayout mainView;
-    Button btnCapture, btnGo;
+    Button btnCapture;
     EditText etxtUrl;
     CropImageView cropImageView;
     ImageButton btnBack;
@@ -83,41 +82,31 @@ public class FragmentWebView extends Fragment {
     LinkitObject currentItem;
     String urlPhoto, urlJSON;
     Boolean isInWebViewState = true;
-    protected BackHandlerInterface backHandlerInterface;
     private static String defaultURL;
-    //public abstract boolean onBackPressed();
-
-//    public static final FragmentWebView newInstance(LinkitObject item) {
-//        FragmentWebView f = new FragmentWebView() {
-//            @Override
-//            public boolean onBackPressed() {
-//                return false;
-//            }
-//        };
-//        f.currentItem = item;
-//        return f;
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
-        currentItem =  getArguments().getParcelable("item");
-
+        ((MainActivity) getActivity()).currentFragmentName = "WebView";
+        try {
+            currentItem = getArguments().getParcelable("item");
+        } catch (Exception ex) {
+        }
         final View rootView = inflater.inflate(R.layout.fragment_webview, container, false);
-        mainView = (RelativeLayout)rootView.findViewById(R.id.lay_MainView);
+        final ProgressBar progressBarLoad = (ProgressBar) rootView.findViewById(R.id.progressBar_load);
+        final ImageView imgInsta = (ImageView) rootView.findViewById(R.id.img_insta_preview);
+        final ImageView imgInstaFull = (ImageView) rootView.findViewById(R.id.imgInstaPreviewFull);
+        RelativeLayout layTopBar = (RelativeLayout) rootView.findViewById(R.id.lay_topBar);
+        Button btnDone = (Button) rootView.findViewById(R.id.btnDone);
+        mainView = (RelativeLayout) rootView.findViewById(R.id.lay_MainView);
         vistaWeb = (WebView) rootView.findViewById(R.id.webView_Content);
         btnCapture = (Button) rootView.findViewById(R.id.btn_capture);
         cropImageView = (CropImageView) rootView.findViewById(R.id.img_screenshot);
-        final ProgressBar progressBarLoad = (ProgressBar) rootView.findViewById(R.id.progressBar_load);
-        RelativeLayout layTopBar = (RelativeLayout) rootView.findViewById(R.id.lay_topBar);
         layWaiting = (RelativeLayout) rootView.findViewById(R.id.lay_waiting);
         btnBack = (ImageButton) rootView.findViewById(R.id.btn_back);
         btnForward = (ImageButton) rootView.findViewById(R.id.btn_forward);
-        Button btnDone = (Button)rootView.findViewById(R.id.btnDone);
-        final ImageView imgInsta = (ImageView) rootView.findViewById(R.id.img_insta_preview);
         etxtUrl = (EditText) rootView.findViewById(R.id.etxtUrl);
 
         options = new DisplayImageOptions.Builder()
@@ -174,6 +163,7 @@ public class FragmentWebView extends Fragment {
             public void onClick(View v) {
                 Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
                 getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
+                getFragmentManager().popBackStack();
             }
         });
 
@@ -196,7 +186,7 @@ public class FragmentWebView extends Fragment {
                         bm = cropImageView.getCroppedImage();
                         new PostPhotoAsync().execute();
                         layWaiting.setVisibility(View.VISIBLE);
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
 
                     }
                 }
@@ -254,6 +244,31 @@ public class FragmentWebView extends Fragment {
             vistaWeb.loadUrl(currentItem.productLink);
         }
 
+        imgInsta.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        imgInstaFull.setVisibility(View.VISIBLE);
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_POINTER_UP:
+
+                        imgInstaFull.setVisibility(View.INVISIBLE);
+                        return true;
+                }
+
+                return false;
+            }
+        });
+
+
+        imageLoader.displayImage(currentItem.imageUrl, imgInstaFull, options, imageListener);
+
         // Get tracker.
         Tracker t = ((GlobalApplication) getActivity().getApplication()).getTracker(GlobalApplication.TrackerName.APP_TRACKER);
         t.setScreenName("LinkitMerchant - WebView");
@@ -262,6 +277,15 @@ public class FragmentWebView extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mainView.removeView(vistaWeb);
+        vistaWeb.setFocusable(true);
+        vistaWeb.removeAllViews();
+        //vistaWeb.clearHistory();
+        vistaWeb.destroy();
+    }
 
     private class ImageDisplayListener extends SimpleImageLoadingListener {
         final List<String> displayedImages = Collections
@@ -295,20 +319,6 @@ public class FragmentWebView extends Fragment {
         }
     }
 
-//    private void checkNavigationButton() {
-//        if (vistaWeb.canGoBack()) {
-//            btnBack.setVisibility(View.VISIBLE);
-//        } else {
-//            btnBack.setVisibility(View.INVISIBLE);
-//        }
-//
-//        if (vistaWeb.canGoForward()) {
-//            btnForward.setVisibility(View.VISIBLE);
-//        } else {
-//            btnForward.setVisibility(View.INVISIBLE);
-//        }
-//    }
-
     private class PostJSONAsync extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
@@ -322,19 +332,11 @@ public class FragmentWebView extends Fragment {
                 post.addHeader("token", ((GlobalApplication) getActivity().getApplication()).getRegistrationId());
                 post.addHeader("device", "android");
                 post.addHeader("userType", "merchant");
-                //json.put("productDescription", "Photo has more information!");
                 json.put("linkToProduct", etxtUrl.getText());
                 StringEntity se = new StringEntity(json.toString());
                 se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
                 post.setEntity(se);
-                response = client.execute(post);
-
-                    /*Checking response */
-                InputStream in = null;
-                if (response != null) {
-                    in = response.getEntity().getContent(); //Get the data in the entity
-                }
-                Log.i("linkit Response: ", in.toString());
+                client.execute(post);
                 return "OK";
 
             } catch (Exception e) {
@@ -346,15 +348,13 @@ public class FragmentWebView extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             try {
+                ((MainActivity) getActivity()).currentFragmentName = "Link";
                 Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
                 getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
                 ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData();
-            }catch (Exception ex)
-            {
-                Log.e("refresh after submit : ",ex.getMessage().toString());
+            } catch (Exception ex) {
+                //Log.e("refresh after submit : ", ex.getMessage().toString());
             }
-            //Toast.makeText(getActivity(), "JSON Upload : " + result, Toast.LENGTH_LONG).show();
-
         }
     }
 
@@ -362,7 +362,6 @@ public class FragmentWebView extends Fragment {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                //bm = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Forest.png");
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 bm = Bitmap.createScaledBitmap(bm, 640, 640, true);
                 bm.compress(Bitmap.CompressFormat.PNG, 100, bos);
@@ -373,17 +372,19 @@ public class FragmentWebView extends Fragment {
                 postRequest.addHeader("device", "android");
                 postRequest.addHeader("userType", "merchant");
                 ByteArrayBody bab = new ByteArrayBody(data, "androidScreenShot.png");
-                MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+                MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create();
+                reqEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
                 reqEntity.addPart("upload", bab);
-                postRequest.setEntity(reqEntity);
-                HttpResponse response = httpClient.execute(postRequest);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-                String sResponse;
-                StringBuilder s = new StringBuilder();
-                while ((sResponse = reader.readLine()) != null) {
-                    s = s.append(sResponse);
-                }
-                Log.i("linkit Response: ", s.toString());
+                postRequest.setEntity(reqEntity.build());
+                //HttpResponse response =
+                httpClient.execute(postRequest);
+                //BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+//                String sResponse;
+//                StringBuilder s = new StringBuilder();
+//                while ((sResponse = reader.readLine()) != null) {
+//                    s = s.append(sResponse);
+//                }
+                //Log.i("linkit Response: ", s.toString());
                 return "OK";
             } catch (Exception e) {
                 e.printStackTrace();
@@ -393,34 +394,8 @@ public class FragmentWebView extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            //Toast.makeText(getActivity(), "Photo Upload : " + result, Toast.LENGTH_LONG).show();
             new PostJSONAsync().execute();
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (!(getActivity() instanceof BackHandlerInterface)) {
-            throw new ClassCastException("Hosting activity must implement BackHandlerInterface");
-        } else {
-            backHandlerInterface = (BackHandlerInterface) getActivity();
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        backHandlerInterface.setSelectedFragment(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    public interface BackHandlerInterface {
-        public void setSelectedFragment(FragmentWebView backHandledFragment);
     }
 
     public void goBack() {
@@ -433,8 +408,9 @@ public class FragmentWebView extends Fragment {
         cropImageView.refreshDrawableState();
         btnCapture.setText("CAPTURE");
         vistaWeb.setVisibility(View.VISIBLE);
+        btnBack.setVisibility(View.VISIBLE);
+        btnForward.setVisibility(View.VISIBLE);
         isInWebViewState = true;
-
     }
 
     public Boolean canGoBackHistory() {
@@ -447,6 +423,5 @@ public class FragmentWebView extends Fragment {
         } else {
             return false;
         }
-
     }
 }

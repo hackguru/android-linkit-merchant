@@ -13,12 +13,10 @@ import ams.android.linkitmerchant.Model.LinkitObject;
 import ams.android.linkitmerchant.R;
 import ams.android.linkitmerchant.Tools.GlobalApplication;
 
-public class MainActivity extends Activity implements FragmentWebView.BackHandlerInterface {
+public class MainActivity extends Activity {
 
     private static String TAG = "linkitMerchant";
-
-
-    private FragmentWebView selectedFragment;
+    public static String currentFragmentName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +26,7 @@ public class MainActivity extends Activity implements FragmentWebView.BackHandle
 
         // check if Notification Received
         if (!getIntent().hasExtra("RunByNoti")) {
-           if (savedInstanceState == null) {
+            if (savedInstanceState == null) {
                 checkLogin();
             }
         } else {
@@ -37,9 +35,12 @@ public class MainActivity extends Activity implements FragmentWebView.BackHandle
             myObject.imageUrl = getIntent().getExtras().getString("imageUrl");
             myObject.productDescription = getIntent().getExtras().getString("text");
             myObject.linkSrceenShot = getIntent().getExtras().getString("linkSrceenShot");
-            new FragmentLinks();
-            FragmentLinks f1 = FragmentLinks.newInstance(myObject);
+
             FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentLinks f1 = new FragmentLinks();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("item", myObject);
+            f1.setArguments(bundle);
             ft.replace(R.id.container, f1, "Links");
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack("Links");
@@ -52,43 +53,27 @@ public class MainActivity extends Activity implements FragmentWebView.BackHandle
         super.onSaveInstanceState(outState);
     }
 
-//    @Override
-//    protected void onUserLeaveHint() {
-//        super.onUserLeaveHint();
-//        finish();
-//    }
 
     @Override
     public void onBackPressed() {
-        try {
-            int count = getFragmentManager().getBackStackEntryCount();
-            if (count > 1) {
-                if ((getFragmentManager().getBackStackEntryAt(count - 1).getName().equals("WebView")) && !selectedFragment.isReadyForExit()) {
-                    selectedFragment.backButtonWasPressed();
-                    Log.i(TAG, "Web - BackButton");
-                } else if (selectedFragment.isReadyForExit() && selectedFragment.canGoBackHistory()) {
-                    selectedFragment.goBack();
-                    Log.i(TAG, "Go Back");
-                } else if ((getFragmentManager().getBackStackEntryAt(count - 1).getName().equals("Links"))) {
-                    /// ((FragmentLinks)getFragmentManager().findFragmentByTag("Links")).refreshData();
-                    Log.i(TAG, "backStack");
-                } else {
-                    getFragmentManager().popBackStack();
-                    Log.i(TAG, "None - popbackstack");
-                }
-            } else {
-                getFragmentManager().popBackStack();
-                finish();
-            }
-        } catch (Exception e) {
-            getFragmentManager().popBackStack();
-            Log.i(TAG, "Error on back - " + e.getMessage());
-        }
-    }
+        int count = getFragmentManager().getBackStackEntryCount();
+        Log.i(TAG, "popbackstack count: " + count);
 
-    @Override
-    public void setSelectedFragment(FragmentWebView selectedFragment) {
-        this.selectedFragment = selectedFragment;
+        if (currentFragmentName.equals("WebView")) {
+            FragmentWebView webFragment = (FragmentWebView) getFragmentManager().findFragmentByTag("WebView");
+            if (!webFragment.isReadyForExit()) {
+                webFragment.backButtonWasPressed();
+            } else if (webFragment.canGoBackHistory()) {
+                webFragment.goBack();
+            } else {
+                currentFragmentName = "Link";
+                getFragmentManager().popBackStack();
+            }
+        } else if (currentFragmentName.equals("Login")) {
+            finish();
+        } else if (currentFragmentName.equals("Link")) {
+            finish();
+        }
     }
 
     private void checkLogin() {
@@ -108,4 +93,10 @@ public class MainActivity extends Activity implements FragmentWebView.BackHandle
             ft.commit();
         }
     }
+
+//    @Override
+//    protected void onUserLeaveHint() {
+//        super.onUserLeaveHint();
+//        finish();
+//    }
 }

@@ -56,10 +56,10 @@ public class AdapterListview extends BaseAdapter {
     Activity activity;
     Context context;
     FragmentManager fragmentManager;
-    ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
-    ImageLoader imageLoader = ImageLoader.getInstance();
-    DisplayImageOptions options;
-    ImageLoadingListener imageListener;
+    static ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
+    static ImageLoader imageLoader = ImageLoader.getInstance();
+    static DisplayImageOptions options;
+    static ImageLoadingListener imageListener;
 
     class DescriptionData {
         int position;

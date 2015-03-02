@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +31,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import ams.android.linkitmerchant.Activity.MainActivity;
 import ams.android.linkitmerchant.Adapter.AdapterListview;
 import ams.android.linkitmerchant.Model.LinkitObject;
 import ams.android.linkitmerchant.R;
@@ -43,7 +43,7 @@ import ams.android.linkitmerchant.Tools.myListView;
  * Created by Aidin on 2/1/2015.
  */
 public class FragmentLinks extends Fragment {
-
+    private static String TAG = "linkitMerchant";
     ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
     public AdapterListview adapterListview;
     myListView listView;
@@ -56,16 +56,15 @@ public class FragmentLinks extends Fragment {
     String globalEndDate = null;
     String globalStartDate = null;
 
-    public static final FragmentLinks newInstance(LinkitObject item) {
-        FragmentLinks f = new FragmentLinks();
-        f.currentItem = item;
-        return f;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        ((MainActivity) getActivity()).currentFragmentName = "Link";
+        try {
+            currentItem = getArguments().getParcelable("item");
+        } catch (Exception ex) {
         }
         View rootView = inflater.inflate(R.layout.fragment_links, container, false);
         userID = ((GlobalApplication) getActivity().getApplication()).getUserId();
@@ -103,7 +102,6 @@ public class FragmentLinks extends Fragment {
         btnInsta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     Intent insta_intent = getActivity().getPackageManager().getLaunchIntentForPackage("com.instagram.android");
                     startActivity(insta_intent);
@@ -137,7 +135,7 @@ public class FragmentLinks extends Fragment {
             public void onDownScrolling() {
                 if (listView.getLastVisiblePosition() == items.size() - 1) {
                     if (!callState) {
-                        Log.i("linkit", "end list");
+                        //Log.i("linkit", "end list");
                         layWaiting.setVisibility(View.VISIBLE);
                         callState = true;
                         addDataToEnd();
@@ -154,15 +152,12 @@ public class FragmentLinks extends Fragment {
         t.setScreenName("LinkitMerchant - List");
         t.send(new HitBuilders.AppViewBuilder().build());
 
-        //refreshData(globalEndDate, globalStartDate, getResources().getString(R.string.PAGING_COUNT));
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        swipeLayout.setRefreshing(true);
-//        refreshData();
     }
 
     public void serverLogout() {
@@ -178,9 +173,8 @@ public class FragmentLinks extends Fragment {
                 items.clear();
                 FragmentLogin f1 = new FragmentLogin();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.container, f1); // f1_container is your FrameLayout container
+                ft.replace(R.id.container, f1);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                //ft.addToBackStack("Login");
                 ft.commit();
             }
 
@@ -226,7 +220,7 @@ public class FragmentLinks extends Fragment {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                globalStartDate = items.get(items.size()-1).createdDate;
+                globalStartDate = items.get(items.size() - 1).createdDate;
                 adapterListview.notifyDataSetChanged();
                 layWaiting.setVisibility(View.INVISIBLE);
                 callState = false;
@@ -271,11 +265,10 @@ public class FragmentLinks extends Fragment {
                     if (currentItem != null) {
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         FragmentWebView f1 = new FragmentWebView();
-                        Bundle bundle=new Bundle();
+                        Bundle bundle = new Bundle();
                         bundle.putParcelable("item", items.get(0));
                         f1.setArguments(bundle);
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        //ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
                         ft.add(R.id.container, f1, "WebView");
                         ft.addToBackStack("WebView");
                         ft.commit();
@@ -286,7 +279,6 @@ public class FragmentLinks extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                //Log.e("linkit-merchant", "ERR : " + errorResponse.toString());
                 swipeLayout.setRefreshing(false);
             }
         });
@@ -339,7 +331,6 @@ public class FragmentLinks extends Fragment {
 
                     items.add(myobject);
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

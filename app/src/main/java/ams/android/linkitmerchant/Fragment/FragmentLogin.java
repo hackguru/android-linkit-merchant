@@ -6,13 +6,13 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import ams.android.linkitmerchant.Activity.MainActivity;
 import ams.android.linkitmerchant.R;
 import ams.android.linkitmerchant.Tools.GlobalApplication;
 
@@ -41,8 +42,7 @@ import ams.android.linkitmerchant.Tools.GlobalApplication;
  * Created by Aidin on 2/1/2015.
  */
 public class FragmentLogin extends Fragment {
-
-    private static String TAG = "linkit";
+    private static String TAG = "linkitMerchant";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     GoogleCloudMessaging gcm;
     Context context;
@@ -54,6 +54,9 @@ public class FragmentLogin extends Fragment {
         if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        ((MainActivity) getActivity()).currentFragmentName = "Login";
+
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
         webView = (WebView) rootView.findViewById(R.id.webViewLogin);
         imageReload = (ImageView) rootView.findViewById(R.id.imgRefresh);
@@ -76,13 +79,15 @@ public class FragmentLogin extends Fragment {
             @Override
             public void onClick(View v) {
                 setUrl();
-                //new hasActiveInternetConnectionTask().execute();
             }
         });
         imageReload.bringToFront();
-        CookieSyncManager.createInstance(getActivity());
         CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.removeAllCookie();
+        if (Build.VERSION.SDK_INT > 20) {
+            cookieManager.flush();
+        } else {
+            cookieManager.removeAllCookie();
+        }
 
         context = getActivity().getApplicationContext();
         if (checkPlayServices()) {
@@ -126,7 +131,6 @@ public class FragmentLogin extends Fragment {
 
         return rootView;
     }
-
 
     private void setUrl() {
         String url = getResources().getString(R.string.BASE_URL) + "users/auth/merchant/android/" + ((GlobalApplication) getActivity().getApplication()).getRegistrationId();
@@ -184,10 +188,6 @@ public class FragmentLogin extends Fragment {
         client.addHeader("userType", "merchant");
         client.get(URL, new AsyncHttpResponseHandler() {
             @Override
-            public void onStart() {
-            }
-
-            @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 try {
                     parseJSON(new String(response, "UTF-8"));
@@ -198,7 +198,6 @@ public class FragmentLogin extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                Log.e(TAG, "ERR");
             }
 
             @Override
@@ -216,7 +215,6 @@ public class FragmentLogin extends Fragment {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.container, f1); // f1_container is your FrameLayout container
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                //ft.addToBackStack("Links");
                 ft.commit();
             } catch (JSONException e) {
                 e.printStackTrace();
