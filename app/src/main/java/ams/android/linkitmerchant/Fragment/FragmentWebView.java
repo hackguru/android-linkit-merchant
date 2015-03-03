@@ -67,11 +67,12 @@ import ams.android.linkitmerchant.Tools.GlobalApplication;
  */
 public class FragmentWebView extends Fragment {
     private static String TAG = "linkitMerchant";
-    static WebView vistaWeb;
     static Bitmap bm;
     static ImageLoader imageLoader = ImageLoader.getInstance();
     static DisplayImageOptions options;
+    static DisplayImageOptions optionsFull;
     static ImageLoadingListener imageListener;
+    WebView vistaWeb;
     RelativeLayout mainView;
     Button btnCapture;
     EditText etxtUrl;
@@ -113,14 +114,24 @@ public class FragmentWebView extends Fragment {
                 .resetViewBeforeLoading(true)
                 .showImageOnFail(R.drawable.fail)
                 .showImageOnLoading(R.drawable.loading)
-                .showImageForEmptyUri(R.drawable.unlink).cacheInMemory(true)
+                .showImageForEmptyUri(R.drawable.unlink)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
                 .preProcessor(new BitmapProcessor() {
                     @Override
                     public Bitmap process(Bitmap bitmap) {
                         return Bitmap.createScaledBitmap(bitmap, 100, 100, true);
                     }
                 })
-                .cacheOnDisk(true).build();
+                .build();
+        optionsFull = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .showImageOnFail(R.drawable.fail)
+                .showImageOnLoading(R.drawable.loading)
+                .showImageForEmptyUri(R.drawable.unlink)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
 
         imageListener = new ImageDisplayListener();
         if (!imageLoader.isInited()) {
@@ -161,9 +172,10 @@ public class FragmentWebView extends Fragment {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
-                getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
+                //Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
+                //getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
                 getFragmentManager().popBackStack();
+                //((MainActivity) getActivity()).currentFragmentName = "Link";
             }
         });
 
@@ -247,25 +259,20 @@ public class FragmentWebView extends Fragment {
         imgInsta.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 switch (event.getAction()) {
-
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_POINTER_DOWN:
                         imgInstaFull.setVisibility(View.VISIBLE);
                         return true;
-
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
-
                         imgInstaFull.setVisibility(View.INVISIBLE);
                         return true;
                 }
-
                 return false;
             }
         });
-        imageLoader.displayImage(currentItem.imageUrl, imgInstaFull, options, imageListener);
+        imageLoader.displayImage(currentItem.imageUrl, imgInstaFull, optionsFull, imageListener);
 
         // Get tracker.
         Tracker t = ((GlobalApplication) getActivity().getApplication()).getTracker(GlobalApplication.TrackerName.APP_TRACKER);
@@ -346,10 +353,13 @@ public class FragmentWebView extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             try {
-                ((MainActivity) getActivity()).currentFragmentName = "Link";
-                Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
-                getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
                 ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData();
+                getFragmentManager().popBackStack();
+//                ((MainActivity) getActivity()).currentFragmentName = "Link";
+//                Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
+//                getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
+//                ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData();
+//                ((MainActivity) getActivity()).currentFragmentName = "Link";
             } catch (Exception ex) {
                 //Log.e("refresh after submit : ", ex.getMessage().toString());
             }

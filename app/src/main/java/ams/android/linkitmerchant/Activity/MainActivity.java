@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         int count = getFragmentManager().getBackStackEntryCount();
-        Log.i(TAG, "popbackstack count: " + count);
+         Log.i(TAG, "popbackstack count: " + count);
 
         if (currentFragmentName.equals("WebView")) {
             FragmentWebView webFragment = (FragmentWebView) getFragmentManager().findFragmentByTag("WebView");

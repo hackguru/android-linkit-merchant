@@ -56,6 +56,7 @@ public class NotiHeadService extends Service {
     ImageLoader imageLoader = ImageLoader.getInstance();
     DisplayImageOptions options;
     ImageLoadingListener imageListener;
+    Boolean isNotiCatched;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -69,6 +70,8 @@ public class NotiHeadService extends Service {
         final String linkSrceenShot = (String) intent.getExtras().get("linkSrceenShot");
         final String productLink = (String) intent.getExtras().get("productLink");
         final String text = (String) intent.getExtras().get("text");
+
+        isNotiCatched = false;
 
         Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(500);
@@ -113,24 +116,20 @@ public class NotiHeadService extends Service {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                //if (event.getAction()==MotionEvent.ACTION_UP)
-                {
-                    //Toast.makeText(getApplicationContext(), "CLICK", Toast.LENGTH_SHORT).show();
+                if (!isNotiCatched) {
                     Intent myIntent = new Intent().setClass(NotiHeadService.this, MainActivity.class);
                     myIntent.putExtra("RunByNoti", true);
                     myIntent.putExtra("imageUrl", imageUrl);
                     myIntent.putExtra("linkSrceenShot", linkSrceenShot);
                     myIntent.putExtra("productLink", productLink);
                     myIntent.putExtra("text", text);
-                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(myIntent);
-
+                    isNotiCatched = true;
                     new mainTask().run();
                     timer.cancel();
                 }
-
                 return super.onTouch(v, event);
-
             }
         });
 
