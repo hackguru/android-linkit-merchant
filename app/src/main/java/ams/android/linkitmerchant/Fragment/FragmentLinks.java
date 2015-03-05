@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -56,7 +55,6 @@ public class FragmentLinks extends Fragment {
     TextView txtEmptyInfo;
     String globalEndDate = null;
     String globalStartDate = null;
-    int firstVisibaleItemIndex;
 
     public static void deleteItem(int position) {
         items.remove(position);
@@ -77,7 +75,6 @@ public class FragmentLinks extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        
     }
 
     @Override
@@ -165,17 +162,6 @@ public class FragmentLinks extends Fragment {
                         addDataToEnd();
                     }
                 }
-            }
-        });
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                firstVisibaleItemIndex = firstVisibleItem;
             }
         });
         swipeLayout.setRefreshing(true);

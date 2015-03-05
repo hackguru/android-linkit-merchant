@@ -84,7 +84,7 @@
             android:divider="#cccccc"
             android:dividerHeight="0dp"
             android:drawSelectorOnTop="false"
-            android:scrollingCache="true"
+            android:scrollingCache="false"
             android:smoothScrollbar="true"
             android:listSelector="@android:color/transparent"
             tools:listitem="@layout/item_list" />
