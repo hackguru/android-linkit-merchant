@@ -74,7 +74,7 @@
         android:layout_below="@+id/txtEmptyInfo">
 
 
-        <ams.android.linkitmerchant.Tools.myListView
+        <ams.android.linkitmerchant.Tools.customListView
             android:id="@+id/listView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

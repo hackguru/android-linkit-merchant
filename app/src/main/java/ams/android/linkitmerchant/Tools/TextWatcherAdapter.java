@@ -12,9 +12,7 @@ import android.widget.EditText;
 public class TextWatcherAdapter implements TextWatcher {
 
     public interface TextWatcherListener {
-
         void onTextChanged(EditText view, String text);
-
     }
 
     private final EditText view;
@@ -31,14 +29,11 @@ public class TextWatcherAdapter implements TextWatcher {
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count,
-                                  int after) {
-        // pass
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        // pass
     }
 
 }

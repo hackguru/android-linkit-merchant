@@ -5,13 +5,14 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -36,7 +37,7 @@ import ams.android.linkitmerchant.Adapter.AdapterListview;
 import ams.android.linkitmerchant.Model.LinkitObject;
 import ams.android.linkitmerchant.R;
 import ams.android.linkitmerchant.Tools.GlobalApplication;
-import ams.android.linkitmerchant.Tools.myListView;
+import ams.android.linkitmerchant.Tools.customListView;
 
 
 /**
@@ -44,9 +45,9 @@ import ams.android.linkitmerchant.Tools.myListView;
  */
 public class FragmentLinks extends Fragment {
     private static String TAG = "linkitMerchant";
-    ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
-    public AdapterListview adapterListview;
-    myListView listView;
+    static ArrayList<LinkitObject> items = new ArrayList<LinkitObject>();
+    public static AdapterListview adapterListview;
+    customListView listView;
     String userID, regID;
     SwipeRefreshLayout swipeLayout;
     LinkitObject currentItem;
@@ -55,12 +56,35 @@ public class FragmentLinks extends Fragment {
     TextView txtEmptyInfo;
     String globalEndDate = null;
     String globalStartDate = null;
+    int firstVisibaleItemIndex;
+
+    public static void deleteItem(int position) {
+        items.remove(position);
+        adapterListview.notifyDataSetChanged();
+    }
+
+    public static void unMatchItem(int position) {
+        items.get(position).productLink="";
+        items.get(position).linkSrceenShot="";
+        items.get(position).productDescription="";
+        adapterListview.notifyDataSetChanged();
+    }
+
+    public static void notifyDataSetChanged() {
+        adapterListview.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+//        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
+//            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        }
         ((MainActivity) getActivity()).currentFragmentName = "Link";
         try {
             currentItem = getArguments().getParcelable("item");
@@ -69,7 +93,7 @@ public class FragmentLinks extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_links, container, false);
         userID = ((GlobalApplication) getActivity().getApplication()).getUserId();
         regID = ((GlobalApplication) getActivity().getApplication()).getRegistrationId();
-        listView = (myListView) rootView.findViewById(R.id.listView);
+        listView = (customListView) rootView.findViewById(R.id.listView);
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
         ImageButton btnLogout = (ImageButton) rootView.findViewById(R.id.btn_logout);
         ImageButton btnInsta = (ImageButton) rootView.findViewById(R.id.btn_instagram);
@@ -125,7 +149,7 @@ public class FragmentLinks extends Fragment {
         adapterListview = new AdapterListview(getActivity(), getFragmentManager(), items);
         listView.setAdapter(adapterListview);
         listView.setDescendantFocusability(ListView.FOCUS_AFTER_DESCENDANTS);
-        listView.setOnDetectScrollListener(new myListView.OnDetectScrollListener() {
+        listView.setOnDetectScrollListener(new customListView.OnDetectScrollListener() {
             @Override
             public void onUpScrolling() {
 
@@ -143,7 +167,17 @@ public class FragmentLinks extends Fragment {
                 }
             }
         });
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                firstVisibaleItemIndex = firstVisibleItem;
+            }
+        });
         swipeLayout.setRefreshing(true);
         refreshData();
 

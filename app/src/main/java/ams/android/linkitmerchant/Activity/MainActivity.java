@@ -53,7 +53,6 @@ public class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
     }
 
-
     @Override
     public void onBackPressed() {
         int count = getFragmentManager().getBackStackEntryCount();
@@ -69,7 +68,11 @@ public class MainActivity extends Activity {
                 currentFragmentName = "Link";
                 getFragmentManager().popBackStack();
             }
-        } else if (currentFragmentName.equals("Login")) {
+        } else if (currentFragmentName.equals("Intro")) {
+            currentFragmentName = "Login";
+            getFragmentManager().popBackStack();
+        }
+        else if (currentFragmentName.equals("Login")) {
             finish();
         } else if (currentFragmentName.equals("Link")) {
             finish();

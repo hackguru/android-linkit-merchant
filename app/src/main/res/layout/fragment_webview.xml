@@ -175,13 +175,14 @@
         android:visibility="invisible"
         android:scaleType="fitCenter"
         android:adjustViewBounds="false"
-        android:background="#88000000" />
+        android:background="#CCFFFFFF"
+        android:clickable="true" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/lay_waiting"
-        android:background="#BB000000"
+        android:background="#CC000000"
         android:visibility="gone">
 
         <ProgressBar

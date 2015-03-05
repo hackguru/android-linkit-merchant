@@ -9,7 +9,7 @@ import android.widget.AbsListView;
 /**
  * Created by Aidin on 2/18/2015.
  */
-public class myListView extends android.widget.ListView {
+public class customListView extends android.widget.ListView {
 
     private OnScrollListener onScrollListener;
     private OnDetectScrollListener onDetectScrollListener;
@@ -20,17 +20,17 @@ public class myListView extends android.widget.ListView {
         void onDownScrolling();
     }
 
-    public myListView(Context context) {
+    public customListView(Context context) {
         super(context);
         onCreate(context, null, null);
     }
 
-    public myListView(Context context, AttributeSet attrs) {
+    public customListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         onCreate(context, attrs, null);
     }
 
-    public myListView(Context context, AttributeSet attrs, int defStyle) {
+    public customListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         onCreate(context, attrs, defStyle);
     }

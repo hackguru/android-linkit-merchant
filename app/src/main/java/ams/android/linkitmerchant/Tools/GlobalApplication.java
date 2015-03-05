@@ -24,12 +24,15 @@ public class GlobalApplication extends Application {
     private static String PROPERTY_USER_ID = "user_id";
     private static String PROPERTY_REG_ID = "registration_id";
     private static String PROPERTY_APP_VERSION = "appVersion";
+    private static Context context;
+    HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
+
     public enum TrackerName {
         APP_TRACKER, // Tracker used only in this app.
         GLOBAL_TRACKER, // Tracker used by all the apps from a company. eg: roll-up tracking.
         ECOMMERCE_TRACKER, // Tracker used by all ecommerce transactions from a company.
     }
-    HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
+
     public synchronized Tracker getTracker(TrackerName trackerId) {
         if (!mTrackers.containsKey(trackerId)) {
 
@@ -43,26 +46,22 @@ public class GlobalApplication extends Application {
         return mTrackers.get(trackerId);
     }
 
-    public void onCreate ()
-    {
-        // Setup handler for uncaught exceptions.
-        Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
-        {
+    public void onCreate() {
+        context = getApplicationContext();
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
-            public void uncaughtException (Thread thread, Throwable e)
-            {
-                handleUncaughtException (thread, e);
+            public void uncaughtException(Thread thread, Throwable e) {
+                handleUncaughtException(thread, e);
             }
         });
     }
 
-    public void handleUncaughtException (Thread thread, Throwable e)
-    {
+    public static Context getAppContext() {
+        return context;
+    }
+
+    public void handleUncaughtException(Thread thread, Throwable e) {
         e.printStackTrace(); // not all Android versions will print the stack trace automatically
-//        Intent intent = new Intent ();
-//        intent.setAction ("ams.android.linkitmerchant.Tools"); // see step 5.
-//        intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK); // required when starting from Application
-//        startActivity (intent);
         System.exit(1); // kill off the crashed app
     }
 
@@ -142,7 +141,7 @@ public class GlobalApplication extends Application {
     }
 
     private SharedPreferences getGCMPreferences() {
-        return getSharedPreferences("linkitMerchant",
+        return getSharedPreferences(TAG,
                 Context.MODE_PRIVATE);
     }
 

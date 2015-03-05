@@ -2,10 +2,10 @@ package ams.android.linkitmerchant.Fragment;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,7 +38,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.core.process.BitmapProcessor;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -67,6 +66,7 @@ import ams.android.linkitmerchant.Tools.GlobalApplication;
  */
 public class FragmentWebView extends Fragment {
     private static String TAG = "linkitMerchant";
+    private static String defaultURL;
     static Bitmap bm;
     static ImageLoader imageLoader = ImageLoader.getInstance();
     static DisplayImageOptions options;
@@ -83,13 +83,13 @@ public class FragmentWebView extends Fragment {
     LinkitObject currentItem;
     String urlPhoto, urlJSON;
     Boolean isInWebViewState = true;
-    private static String defaultURL;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+//        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
+//            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        }
         ((MainActivity) getActivity()).currentFragmentName = "WebView";
         try {
             currentItem = getArguments().getParcelable("item");
@@ -266,8 +266,10 @@ public class FragmentWebView extends Fragment {
                         return true;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
+                    case MotionEvent.ACTION_CANCEL:
                         imgInstaFull.setVisibility(View.INVISIBLE);
                         return true;
+
                 }
                 return false;
             }
@@ -327,11 +329,10 @@ public class FragmentWebView extends Fragment {
     private class PostJSONAsync extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... params) {
+            Log.e(TAG, "Send start");
             HttpClient client = new DefaultHttpClient();
             HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000); //Timeout Limit
-            HttpResponse response;
             JSONObject json = new JSONObject();
-
             try {
                 HttpPost post = new HttpPost(urlJSON);
                 post.addHeader("token", ((GlobalApplication) getActivity().getApplication()).getRegistrationId());
@@ -343,7 +344,6 @@ public class FragmentWebView extends Fragment {
                 post.setEntity(se);
                 client.execute(post);
                 return "OK";
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return "ERROR";
@@ -353,15 +353,11 @@ public class FragmentWebView extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             try {
+                //Log.e(TAG ,"Send finish");
                 ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData();
                 getFragmentManager().popBackStack();
-//                ((MainActivity) getActivity()).currentFragmentName = "Link";
-//                Fragment currentFragment = getFragmentManager().findFragmentByTag("WebView");
-//                getActivity().getFragmentManager().beginTransaction().remove(currentFragment).commit();
-//                ((FragmentLinks) getFragmentManager().findFragmentByTag("Links")).refreshData();
-//                ((MainActivity) getActivity()).currentFragmentName = "Link";
             } catch (Exception ex) {
-                //Log.e("refresh after submit : ", ex.getMessage().toString());
+                Log.e(TAG, "Link list update error : " + ex.getMessage().toString());
             }
         }
     }

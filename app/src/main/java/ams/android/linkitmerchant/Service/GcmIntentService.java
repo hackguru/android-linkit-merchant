@@ -2,12 +2,10 @@ package ams.android.linkitmerchant.Service;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -17,10 +15,10 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
  * Created by Aidin on 2/1/2015.
  */
 public class GcmIntentService extends IntentService {
-    public static final int NOTIFICATION_ID = 1;
-    private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
-    private static String TAG = "linkit merchant";
+    //    public static final int NOTIFICATION_ID = 1;
+    //    private NotificationManager mNotificationManager;
+    //    NotificationCompat.Builder builder;
+    private static String TAG = "linkitMerchant";
 
     public GcmIntentService() {
         super("GcmIntentService");

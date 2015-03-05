@@ -3,8 +3,6 @@ package ams.android.linkitmerchant.Fragment;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,15 +43,14 @@ public class FragmentLogin extends Fragment {
     private static String TAG = "linkitMerchant";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     GoogleCloudMessaging gcm;
-    Context context;
     WebView webView;
     ImageView imageReload;
     ProgressBar progressBarLoad;
 
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+//        if (!(getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)) {
+//            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        }
 
         ((MainActivity) getActivity()).currentFragmentName = "Login";
 
@@ -89,9 +86,8 @@ public class FragmentLogin extends Fragment {
             cookieManager.removeAllCookie();
         }
 
-        context = getActivity().getApplicationContext();
         if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(context);
+            gcm = GoogleCloudMessaging.getInstance(GlobalApplication.getAppContext());
             if (((GlobalApplication) getActivity().getApplication()).getRegistrationId().isEmpty()) {
                 registerInBackground();
             } else {
@@ -148,7 +144,7 @@ public class FragmentLogin extends Fragment {
             String msg;
             try {
                 if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(context);
+                    gcm = GoogleCloudMessaging.getInstance(GlobalApplication.getAppContext());
                 }
                 String regId = gcm.register(getResources().getString(R.string.SENDER_ID));
                 msg = "Device registered, registration ID=" + regId;
@@ -167,7 +163,7 @@ public class FragmentLogin extends Fragment {
     }
 
     private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(GlobalApplication.getAppContext());
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
